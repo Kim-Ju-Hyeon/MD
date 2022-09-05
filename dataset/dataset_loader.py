@@ -33,7 +33,7 @@ def make_mol_file_to_dataset(smile_csv, data, test=False):
             else:
                 target = smile_csv.iloc[index].Reorg_ex
         else:
-            target = None
+            target = 0
 
         m = Chem.MolFromMolFile(m_dir)
 
