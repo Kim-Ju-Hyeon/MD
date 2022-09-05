@@ -1,5 +1,7 @@
 from math import pi as PI
 import torch
+import torch.nn as nn
+
 from torch.nn import Linear
 from torch_geometric.nn.inits import glorot_orthogonal
 
@@ -89,9 +91,9 @@ class SphericalBasisLayer(torch.nn.Module):
 
 
 class ResidualLayer(torch.nn.Module):
-    def __init__(self, hidden_channels, act):
+    def __init__(self, hidden_channels):
         super().__init__()
-        self.act = act
+        self.act = nn.SiLU()
         self.lin1 = Linear(hidden_channels, hidden_channels)
         self.lin2 = Linear(hidden_channels, hidden_channels)
 

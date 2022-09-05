@@ -5,10 +5,6 @@ from models.block import *
 from torch_sparse import SparseTensor
 from torch_geometric.nn import radius_graph
 
-from torch_geometric.nn.resolver import activation_resolver
-
-
-
 class DimeNet(torch.nn.Module):
     r"""The directional message passing neural network (DimeNet) from the
     `"Directional Message Passing for Molecular Graphs"
@@ -54,14 +50,11 @@ class DimeNet(torch.nn.Module):
                  num_blocks: int, num_bilinear: int, num_spherical: int,
                  num_radial, cutoff: float = 5.0, max_num_neighbors: int = 32,
                  envelope_exponent: int = 5, num_before_skip: int = 1,
-                 num_after_skip: int = 2, num_output_layers: int = 3,
-                 act: Union[str, Callable] = 'swish'):
+                 num_after_skip: int = 2, num_output_layers: int = 3):
         super().__init__()
 
         if num_spherical < 2:
             raise ValueError("num_spherical should be greater than 1")
-
-        act = activation_resolver(act)
 
         self.cutoff = cutoff
         self.max_num_neighbors = max_num_neighbors
@@ -71,16 +64,16 @@ class DimeNet(torch.nn.Module):
         self.sbf = SphericalBasisLayer(num_spherical, num_radial, cutoff,
                                        envelope_exponent)
 
-        self.emb = EmbeddingBlock(num_radial, hidden_channels, act)
+        self.emb = EmbeddingBlock(num_radial, hidden_channels)
 
         self.output_blocks = torch.nn.ModuleList([
             OutputBlock(num_radial, hidden_channels, out_channels,
-                        num_output_layers, act) for _ in range(num_blocks + 1)
+                        num_output_layers) for _ in range(num_blocks + 1)
         ])
 
         self.interaction_blocks = torch.nn.ModuleList([
             InteractionBlock(hidden_channels, num_bilinear, num_spherical,
-                             num_radial, num_before_skip, num_after_skip, act)
+                             num_radial, num_before_skip, num_after_skip)
             for _ in range(num_blocks)
         ])
 

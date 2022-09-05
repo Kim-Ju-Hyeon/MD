@@ -1,5 +1,6 @@
 from math import sqrt
 import torch
+import torch.nn as nn
 from torch.nn import Embedding, Linear
 from torch_scatter import scatter
 
@@ -8,9 +9,9 @@ from models.layers import ResidualLayer
 
 
 class EmbeddingBlock(torch.nn.Module):
-    def __init__(self, num_radial, hidden_channels, act):
+    def __init__(self, num_radial, hidden_channels):
         super().__init__()
-        self.act = act
+        self.act = nn.SiLU()
 
         self.emb = Embedding(95, hidden_channels)
         self.lin_rbf = Linear(num_radial, hidden_channels)
@@ -30,9 +31,9 @@ class EmbeddingBlock(torch.nn.Module):
 
 class InteractionBlock(torch.nn.Module):
     def __init__(self, hidden_channels, num_bilinear, num_spherical,
-                 num_radial, num_before_skip, num_after_skip, act):
+                 num_radial, num_before_skip, num_after_skip):
         super().__init__()
-        self.act = act
+        self.act = nn.SiLU()
 
         self.lin_rbf = Linear(num_radial, hidden_channels, bias=False)
         self.lin_sbf = Linear(num_spherical * num_radial, num_bilinear,
@@ -46,11 +47,11 @@ class InteractionBlock(torch.nn.Module):
             torch.Tensor(hidden_channels, num_bilinear, hidden_channels))
 
         self.layers_before_skip = torch.nn.ModuleList([
-            ResidualLayer(hidden_channels, act) for _ in range(num_before_skip)
+            ResidualLayer(hidden_channels) for _ in range(num_before_skip)
         ])
         self.lin = Linear(hidden_channels, hidden_channels)
         self.layers_after_skip = torch.nn.ModuleList([
-            ResidualLayer(hidden_channels, act) for _ in range(num_after_skip)
+            ResidualLayer(hidden_channels) for _ in range(num_after_skip)
         ])
 
         self.reset_parameters()
@@ -91,10 +92,9 @@ class InteractionBlock(torch.nn.Module):
 
 
 class OutputBlock(torch.nn.Module):
-    def __init__(self, num_radial, hidden_channels, out_channels, num_layers,
-                 act):
+    def __init__(self, num_radial, hidden_channels, out_channels, num_layers):
         super().__init__()
-        self.act = act
+        self.act = nn.SiLU()
 
         self.lin_rbf = Linear(num_radial, hidden_channels, bias=False)
         self.lins = torch.nn.ModuleList()
