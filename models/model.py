@@ -46,35 +46,41 @@ class DimeNet(torch.nn.Module):
     url = ('https://github.com/klicperajo/dimenet/raw/master/pretrained/'
            'dimenet')
 
-    def __init__(self, hidden_channels: int, out_channels: int,
-                 num_blocks: int, num_bilinear: int, num_spherical: int,
-                 num_radial, cutoff: float = 5.0, max_num_neighbors: int = 32,
-                 envelope_exponent: int = 5, num_before_skip: int = 1,
-                 num_after_skip: int = 2, num_output_layers: int = 3):
+    def __init__(self, config):
         super().__init__()
+
+        hidden_channels = config.hidden_channels
+        num_radial = config.num_radial
+        out_channels = config.out_channels
+        num_bilinear = config.num_bilinear
+        num_spherical = config.num_spherical
+        envelope_exponent = config.envelope_exponent
+        num_before_skip = config.num_before_skip
+        num_after_skip = config.num_after_skip
+        num_output_layers = config.num_output_layers
 
         if num_spherical < 2:
             raise ValueError("num_spherical should be greater than 1")
 
-        self.cutoff = cutoff
-        self.max_num_neighbors = max_num_neighbors
-        self.num_blocks = num_blocks
+        self.cutoff = config.cutoff
+        self.max_num_neighbors = config.max_num_neighbors
+        self.num_blocks = config.num_blocks
 
-        self.rbf = BesselBasisLayer(num_radial, cutoff, envelope_exponent)
-        self.sbf = SphericalBasisLayer(num_spherical, num_radial, cutoff,
+        self.rbf = BesselBasisLayer(num_radial, self.cutoff, envelope_exponent)
+        self.sbf = SphericalBasisLayer(num_spherical, num_radial, self.cutoff,
                                        envelope_exponent)
 
         self.emb = EmbeddingBlock(num_radial, hidden_channels)
 
         self.output_blocks = torch.nn.ModuleList([
             OutputBlock(num_radial, hidden_channels, out_channels,
-                        num_output_layers) for _ in range(num_blocks + 1)
+                        num_output_layers) for _ in range(self.num_blocks + 1)
         ])
 
         self.interaction_blocks = torch.nn.ModuleList([
             InteractionBlock(hidden_channels, num_bilinear, num_spherical,
                              num_radial, num_before_skip, num_after_skip)
-            for _ in range(num_blocks)
+            for _ in range(self.num_blocks)
         ])
 
         self.reset_parameters()

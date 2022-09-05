@@ -30,9 +30,15 @@ def make_mol_file_to_dataset(smile_csv, data, test=False):
         if not test:
             if 'g' in temp[-1]:
                 target = smile_csv.iloc[index].Reorg_g
+                state = 'g'
             else:
                 target = smile_csv.iloc[index].Reorg_ex
+                state = 'ex'
         else:
+            if 'g' in temp[-1]:
+                state = 'g'
+            else:
+                state = 'ex'
             target = 0
 
         m = Chem.MolFromMolFile(m_dir)
@@ -89,7 +95,7 @@ def make_mol_file_to_dataset(smile_csv, data, test=False):
         x = torch.cat([x1.to(torch.float), x2], dim=-1)
 
         data = Data(x=x, z=z, pos=pos, edge_index=edge_index,
-                    edge_attr=edge_attr, y=target, idx=index)
+                    edge_attr=edge_attr, y=target, idx=index, state=state)
 
         dataset.append(data)
 
