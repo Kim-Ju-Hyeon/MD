@@ -136,6 +136,7 @@ class Runner(object):
 
     def test(self):
         submission = pd.read_csv("./data/sample_submission.csv", index_col=0)
+        submission = submission.astype('float')
 
         self.test_dataset = DataLoader(self._test, batch_size=1)
 
