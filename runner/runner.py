@@ -158,9 +158,9 @@ class Runner(object):
                 out = self.model(z=data_batch.z, pos=data_batch.pos, batch=data_batch.batch)
 
             if data_batch.state[0] == 'g':
-                submission.iloc[int(data_batch.idx[0])]['Reorg_g'] = out
+                submission.iloc[int(data_batch.idx[0])]['Reorg_g'] = out.cpu().detach().numpy()
             else:
-                submission.iloc[int(data_batch.idx[0])]['Reorg_ex'] = out
+                submission.iloc[int(data_batch.idx[0])]['Reorg_ex'] = out.cpu().detach().numpy()
 
         submission.to_csv(self.config.exp_sub_dir+'/submission.csv')
 
