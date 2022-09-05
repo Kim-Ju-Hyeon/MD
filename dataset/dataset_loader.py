@@ -102,8 +102,8 @@ def get_dataset(data_dir):
     train_data = glob(train_data_dirs + '/*.mol')
     test_data = glob(test_data_dirs+'/*.mol')
 
-    train_dataset = make_mol_file_to_dataset(smile_csv, train_data)
-    test_dataset = make_mol_file_to_dataset(smile_csv, test_data)
+    train_dataset = make_mol_file_to_dataset(smile_csv, train_data, test=False)
+    test_dataset = make_mol_file_to_dataset(smile_csv, test_data, test=True)
 
     seed = np.random.randint(10000)
     random_state = np.random.RandomState(seed=seed)
