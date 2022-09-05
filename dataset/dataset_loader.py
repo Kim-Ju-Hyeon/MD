@@ -95,8 +95,8 @@ def make_mol_file_to_dataset(smile_csv, data, test=False):
 
 
 def get_dataset(data_dir):
-    train_data_dirs = data_dir + '/train_set'
-    test_data_dirs = data_dir + '/test_set'
+    train_data_dirs = data_dir + '/mol_files/train_set'
+    test_data_dirs = data_dir + '/mol_files/test_set'
     smile_csv = pd.read_csv(data_dir+'/train_set.ReorgE.csv', index_col=0)
 
     train_data = glob(train_data_dirs + '/*.mol')
@@ -104,7 +104,7 @@ def get_dataset(data_dir):
 
     train_dataset = make_mol_file_to_dataset(smile_csv, train_data)
     test_dataset = make_mol_file_to_dataset(smile_csv, test_data)
-    
+
     seed = np.random.randint(10000)
     random_state = np.random.RandomState(seed=seed)
     perm = torch.from_numpy(random_state.permutation(np.arange(36314)))
