@@ -19,7 +19,6 @@ from dataset.dataset_loader import get_dataset
 
 class Runner(object):
     def __init__(self, config):
-        self.train, self.validation, self.test = get_dataset('./data')
         self.config = config
         self.exp_dir = config.exp_dir
         self.model_save = config.model_save
@@ -40,9 +39,11 @@ class Runner(object):
         if self.use_gpu and (self.device != 'cpu'):
             self.model = self.model.to(device=self.device)
 
+        self._train, self._validation, self._test = get_dataset('./data')
+
     def train(self):
-        self.train_dataset = DataLoader(self.train, batch_size=self.batch_size)
-        self.valid_dataset = DataLoader(self.validation, batch_size=self.batch_size)
+        self.train_dataset = DataLoader(self._train, batch_size=self.batch_size)
+        self.valid_dataset = DataLoader(self._validation, batch_size=self.batch_size)
 
         # create optimizer
         params = filter(lambda p: p.requires_grad, self.model.parameters())
@@ -131,7 +132,7 @@ class Runner(object):
     def test(self):
         submission = pd.read_csv("./data/sample_submission.csv")
 
-        self.test_dataset = DataLoader(self.test, batch_size=1)
+        self.test_dataset = DataLoader(self._test, batch_size=1)
 
         self.best_model = DimeNet(self.config.model)
         best_snapshot = load_model(self.best_model_dir)
