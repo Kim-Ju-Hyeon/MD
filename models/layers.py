@@ -40,9 +40,7 @@ class BesselBasisLayer(torch.nn.Module):
 
     def forward(self, dist):
         dist = (dist.unsqueeze(-1) / self.cutoff)
-        print(dist.device)
-        print(self.freq.device)
-        print(self.envelope.device)
+
         return self.envelope(dist) * (self.freq * dist).sin()
 
 

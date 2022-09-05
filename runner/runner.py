@@ -78,6 +78,10 @@ class Runner(object):
             train_loss = []
 
             for i, data_batch in enumerate(tqdm(self.train_dataset)):
+
+                if self.use_gpu and (self.device != 'cpu'):
+                    data_batch = data_batch.to(device=self.device)
+
                 out = self.model(z=data_batch.z, pos=data_batch.pos, batch=data_batch.batch)
 
                 loss = self.loss(out, data_batch.y)
@@ -107,6 +111,7 @@ class Runner(object):
 
                 if self.use_gpu and (self.device != 'cpu'):
                     data_batch = data_batch.to(device=self.device)
+
                 with torch.no_grad():
                     out = self.model(z=data_batch.z, pos=data_batch.pos, batch=data_batch.batch)
 
