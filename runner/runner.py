@@ -135,7 +135,7 @@ class Runner(object):
         pickle.dump(results, open(os.path.join(self.config.exp_sub_dir, 'training_result.pickle'), 'wb'))
 
     def test(self):
-        submission = pd.read_csv("./data/sample_submission.csv")
+        submission = pd.read_csv("./data/sample_submission.csv", index_col=0)
 
         self.test_dataset = DataLoader(self._test, batch_size=1)
 
@@ -162,7 +162,7 @@ class Runner(object):
             else:
                 submission.iloc[int(data_batch.idx[0])]['Reorg_ex'] = out
 
-        submission.to_csv(self.config.exp_sub_dir+'submission.csv')
+        submission.to_csv(self.config.exp_sub_dir+'/submission.csv')
 
 
 
