@@ -37,9 +37,9 @@ def main(conf_file_path):
     logger.info("Exp instance id = {}".format(config.exp_name))
 
     try:
-        runner = Runner(config=config)
-        runner.train()
-        runner.test()
+        my_runner = Runner(config=config)
+        my_runner.train()
+        my_runner.test()
 
     except:
         logger.error(traceback.format_exc())
