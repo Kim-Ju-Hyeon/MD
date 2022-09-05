@@ -156,6 +156,7 @@ class Runner(object):
 
             with torch.no_grad():
                 out = self.model(z=data_batch.z, pos=data_batch.pos, batch=data_batch.batch)
+                print(out)
 
             if data_batch.state[0] == 'g':
                 submission.iloc[int(data_batch.idx[0])]['Reorg_g'] = out
