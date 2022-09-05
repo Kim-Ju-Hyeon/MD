@@ -107,9 +107,18 @@ def get_dataset(data_dir):
 
     seed = np.random.randint(10000)
     random_state = np.random.RandomState(seed=seed)
-    perm = torch.from_numpy(random_state.permutation(np.arange(36314)))
+    perm = torch.from_numpy(random_state.permutation(np.arange(len(train_data))))
 
-    train_idx = perm[:30000]
-    val_idx = perm[30000:]
+    idx = int(len(train_data) * 0.8)
+    train_idx = perm[:idx]
+    val_idx = perm[idx:]
 
-    return train_dataset[train_idx], train_dataset[val_idx], test_dataset
+    train = []
+    for idx in train_idx:
+        train.append(train_dataset[idx])
+
+    validation = []
+    for idx in val_idx:
+        validation.append(train_dataset[idx])
+
+    return train, validation, test_dataset
