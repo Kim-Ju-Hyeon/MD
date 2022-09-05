@@ -84,7 +84,7 @@ class Runner(object):
 
                 out = self.model(z=data_batch.z, pos=data_batch.pos, batch=data_batch.batch)
 
-                loss = self.loss(out, data_batch.y)
+                loss = self.loss(out.squeeze(), data_batch.y)
                 # backward pass (accumulates gradients).
                 loss.backward()
 
@@ -115,7 +115,7 @@ class Runner(object):
                 with torch.no_grad():
                     out = self.model(z=data_batch.z, pos=data_batch.pos, batch=data_batch.batch)
 
-                loss = self.loss(out, data_batch.y)
+                loss = self.loss(out.squeeze(), data_batch.y)
                 val_loss += [float(loss.data.cpu().numpy())]
 
             val_loss = np.stack(val_loss).mean()
@@ -157,10 +157,10 @@ class Runner(object):
             with torch.no_grad():
                 out = self.model(z=data_batch.z, pos=data_batch.pos, batch=data_batch.batch)
 
-            if data_batch.state == 'g':
-                submission.iloc[int(data_batch.index)]['Reorg_g'] = out
+            if data_batch.state[0] == 'g':
+                submission.iloc[int(data_batch.idx[0])]['Reorg_g'] = out
             else:
-                submission.iloc[int(data_batch.index)]['Reorg_ex'] = out
+                submission.iloc[int(data_batch.idx[0])]['Reorg_ex'] = out
 
         submission.to_csv(self.config.exp_sub_dir+'submission.csv')
 
