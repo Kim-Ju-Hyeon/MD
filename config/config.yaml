@@ -1,5 +1,5 @@
 ---
-exp_name: test # 0417
+exp_name: DimeNet_Grid_Search # 0417
 exp_dir: ../exp
 use_gpu: True
 device: 0
@@ -9,7 +9,7 @@ train_resume: False
 
 train:
     optimizer: Adam
-    epoch: 1
+    epoch: 150
     loss_function : MAE
     lr: 1.0e-3
     wd: 0.0e-4 # Adam
