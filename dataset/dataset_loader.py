@@ -114,11 +114,11 @@ def get_dataset(data_dir):
     val_idx = perm[idx:]
 
     train = []
-    for idx in train_idx:
-        train.append(train_dataset[idx])
+    for ii in train_idx:
+        train.append(train_dataset[ii])
 
     validation = []
-    for idx in val_idx:
-        validation.append(train_dataset[idx])
+    for jj in val_idx:
+        validation.append(train_dataset[jj])
 
     return train, validation, test_dataset
