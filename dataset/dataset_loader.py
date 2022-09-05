@@ -1,6 +1,8 @@
 import os
 from glob import glob
 
+import pickle
+
 import numpy as np
 import pandas as pd
 from rdkit import Chem
@@ -15,6 +17,8 @@ import torch.nn.functional as F
 from torch_geometric.loader import DataLoader
 from torch_geometric.data import Data
 from torch_scatter import scatter
+
+from utils.train_helper import mkdir
 
 
 def make_mol_file_to_dataset(smile_csv, data, test=False):
@@ -104,14 +108,30 @@ def make_mol_file_to_dataset(smile_csv, data, test=False):
 
 def get_dataset(data_dir):
     train_data_dirs = data_dir + '/mol_files/train_set'
-    test_data_dirs = data_dir + '/mol_files/test_set'
-    smile_csv = pd.read_csv(data_dir+'/train_set.ReorgE.csv', index_col=0)
-
     train_data = glob(train_data_dirs + '/*.mol')
-    test_data = glob(test_data_dirs+'/*.mol')
 
-    train_dataset = make_mol_file_to_dataset(smile_csv, train_data, test=False)
-    test_dataset = make_mol_file_to_dataset(smile_csv, test_data, test=True)
+    if os.path.isfile(os.path.join(data_dir, 'tg_dataset/torch_geometric_dataset.pickle')):
+        _dir = os.path.join(data_dir, 'tg_dataset/torch_geometric_dataset.pickle')
+        dataset = pickle.load(open(_dir, 'rb'))
+        train_dataset = dataset['train']
+        test_dataset = dataset['test']
+
+    else:
+        dataset = {}
+
+        test_data_dirs = data_dir + '/mol_files/test_set'
+        smile_csv = pd.read_csv(data_dir + '/train_set.ReorgE.csv', index_col=0)
+
+        test_data = glob(test_data_dirs + '/*.mol')
+
+        train_dataset = make_mol_file_to_dataset(smile_csv, train_data, test=False)
+        test_dataset = make_mol_file_to_dataset(smile_csv, test_data, test=True)
+
+        dataset['train'] = train_dataset
+        dataset['test'] = test_dataset
+
+        mkdir(os.path.join(data_dir, 'tg_dataset'))
+        pickle.dump(dataset, open(os.path.join(data_dir, 'tg_dataset/torch_geometric_dataset.pickle'), 'wb'))
 
     seed = np.random.randint(10000)
     random_state = np.random.RandomState(seed=seed)
