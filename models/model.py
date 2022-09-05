@@ -134,6 +134,10 @@ class DimeNet(torch.nn.Module):
         b = torch.cross(pos_ji, pos_ki).norm(dim=-1)
         angle = torch.atan2(b, a)
 
+        print(dist.device)
+        print(angle.device)
+        print(idx_kj.device)
+
         rbf = self.rbf(dist)
         sbf = self.sbf(dist, angle, idx_kj)
 
