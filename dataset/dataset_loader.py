@@ -93,6 +93,8 @@ def make_mol_file_to_dataset(smile_csv, data, test=False):
 
         dataset.append(data)
 
+    return dataset
+
 
 def get_dataset(data_dir):
     train_data_dirs = data_dir + '/mol_files/train_set'
