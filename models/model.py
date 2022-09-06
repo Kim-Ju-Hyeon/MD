@@ -43,9 +43,6 @@ class DimeNet(torch.nn.Module):
             (default: :obj:`"swish"`)
     """
 
-    url = ('https://github.com/klicperajo/dimenet/raw/master/pretrained/'
-           'dimenet')
-
     def __init__(self, config):
         super().__init__()
 
@@ -116,10 +113,10 @@ class DimeNet(torch.nn.Module):
         return col, row, idx_i, idx_j, idx_k, idx_kj, idx_ji
 
 
-    def forward(self, z, pos, batch=None):
+    def forward(self, z, pos, edge_index, batch=None):
         """"""
-        edge_index = radius_graph(pos, r=self.cutoff, batch=batch,
-                                  max_num_neighbors=self.max_num_neighbors)
+        # edge_index = radius_graph(pos, r=self.cutoff, batch=batch,
+        #                           max_num_neighbors=self.max_num_neighbors)
 
         i, j, idx_i, idx_j, idx_k, idx_kj, idx_ji = self.triplets(
             edge_index, num_nodes=z.size(0))

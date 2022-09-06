@@ -21,7 +21,7 @@ from torch_scatter import scatter
 from utils.train_helper import mkdir
 
 
-def make_mol_file_to_dataset(smile_csv, data, test=False):
+def make_mol_file_to_dataset(smile_csv, data, mol_state, test=False):
     types = {'H': 0, 'B': 1, 'C': 2, 'N': 3, 'O': 4, 'F': 5, 'Si': 6, 'P': 7, 'S': 8, 'Cl': 9, 'Br': 10, 'I': 11}
     bonds = {BT.SINGLE: 0, BT.DOUBLE: 1, BT.TRIPLE: 2, BT.AROMATIC: 3}
 
@@ -32,17 +32,20 @@ def make_mol_file_to_dataset(smile_csv, data, test=False):
         index = int(temp[1])
 
         if not test:
-            if 'g' in temp[-1]:
+            if ('g' in temp[-1]) and (mol_state == 'g'):
                 target = smile_csv.iloc[index].Reorg_g
                 state = 'g'
-            else:
+
+            elif ('ex' in temp[-1]) and (mol_state == 'ex'):
                 target = smile_csv.iloc[index].Reorg_ex
                 state = 'ex'
         else:
-            if 'g' in temp[-1]:
+            if ('g' in temp[-1]) and (mol_state == 'g'):
                 state = 'g'
-            else:
+
+            elif ('ex' in temp[-1]) and (mol_state == 'ex'):
                 state = 'ex'
+
             target = 0
 
         m = Chem.MolFromMolFile(m_dir)
@@ -106,7 +109,7 @@ def make_mol_file_to_dataset(smile_csv, data, test=False):
     return dataset
 
 
-def get_dataset(data_dir):
+def get_dataset(data_dir, mol_state):
     train_data_dirs = data_dir + '/mol_files/train_set'
     train_data = glob(train_data_dirs + '/*.mol')
 
@@ -124,8 +127,8 @@ def get_dataset(data_dir):
 
         test_data = glob(test_data_dirs + '/*.mol')
 
-        train_dataset = make_mol_file_to_dataset(smile_csv, train_data, test=False)
-        test_dataset = make_mol_file_to_dataset(smile_csv, test_data, test=True)
+        train_dataset = make_mol_file_to_dataset(smile_csv, train_data, mol_state, test=False)
+        test_dataset = make_mol_file_to_dataset(smile_csv, test_data, mol_state, test=True)
 
         dataset['train'] = train_dataset
         dataset['test'] = test_dataset
@@ -137,7 +140,7 @@ def get_dataset(data_dir):
     random_state = np.random.RandomState(seed=seed)
     perm = torch.from_numpy(random_state.permutation(np.arange(len(train_data))))
 
-    idx = int(len(train_data) * 0.8)
+    idx = int(len(train_data) * 0.9)
     train_idx = perm[:idx]
     val_idx = perm[idx:]
 

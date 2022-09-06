@@ -39,7 +39,7 @@ class Runner(object):
         if self.use_gpu and (self.device != 'cpu'):
             self.model = self.model.to(device=self.device)
 
-        self._train, self._validation, self._test = get_dataset('./data')
+        self._train, self._validation, self._test = get_dataset('./data', mol_state=config.model.mol_state)
 
     def train(self):
         self.train_dataset = DataLoader(self._train, batch_size=self.batch_size)
@@ -82,7 +82,8 @@ class Runner(object):
                 if self.use_gpu and (self.device != 'cpu'):
                     data_batch = data_batch.to(device=self.device)
 
-                out = self.model(z=data_batch.z, pos=data_batch.pos, batch=data_batch.batch)
+                out = self.model(z=data_batch.z, pos=data_batch.pos, edge_index=data_batch.edge_index,
+                                 batch=data_batch.batch)
 
                 loss = self.loss(out.squeeze(), data_batch.y)
                 # backward pass (accumulates gradients).
@@ -113,7 +114,8 @@ class Runner(object):
                     data_batch = data_batch.to(device=self.device)
 
                 with torch.no_grad():
-                    out = self.model(z=data_batch.z, pos=data_batch.pos, batch=data_batch.batch)
+                    out = self.model(z=data_batch.z, pos=data_batch.pos, edge_index=data_batch.edge_index,
+                                     batch=data_batch.batch)
 
                 loss = self.loss(out.squeeze(), data_batch.y)
                 val_loss += [float(loss.data.cpu().numpy())]
@@ -156,15 +158,12 @@ class Runner(object):
                 data_batch = data_batch.to(device=self.device)
 
             with torch.no_grad():
-                out = self.model(z=data_batch.z, pos=data_batch.pos, batch=data_batch.batch)
+                out = self.model(z=data_batch.z, pos=data_batch.pos, edge_index=data_batch.edge_index,
+                                 batch=data_batch.batch)
 
             if data_batch.state[0] == 'g':
                 submission.iloc[int(data_batch.idx[0])]['Reorg_g'] = out.cpu().detach().numpy()
             else:
                 submission.iloc[int(data_batch.idx[0])]['Reorg_ex'] = out.cpu().detach().numpy()
 
-        submission.to_csv(self.config.exp_sub_dir+'/submission.csv')
-
-
-
-
+        submission.to_csv(self.config.exp_sub_dir + '/submission.csv')

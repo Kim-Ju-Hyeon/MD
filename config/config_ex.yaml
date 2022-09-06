@@ -1,5 +1,5 @@
 ---
-exp_name: DimeNet_g # 0417
+exp_name: DimeNet_ex # 0417
 exp_dir: ../exp
 use_gpu: True
 device: 0
@@ -19,7 +19,7 @@ train:
     batch_size : 64
 
 model:
-    mol_state: g
+    mol_state: ex
     hidden_channels: 128
     num_radial: 6
     out_channels: 1
