@@ -126,7 +126,7 @@ def get_dataset(data_dir, mol_state):
 
     seed = np.random.randint(10000)
     random_state = np.random.RandomState(seed=seed)
-    perm = torch.from_numpy(random_state.permutation(np.arange(len(train_data))))
+    perm = torch.from_numpy(random_state.permutation(np.arange(len(train_dataset))))
 
     idx = int(len(train_data) * 0.9)
     train_idx = perm[:idx]
