@@ -113,28 +113,13 @@ def get_dataset(data_dir, mol_state):
     train_data_dirs = data_dir + '/mol_files/train_set'
     train_data = glob(train_data_dirs + '/*.mol')
 
-    if os.path.isfile(os.path.join(data_dir, 'tg_dataset/torch_geometric_dataset.pickle')):
-        _dir = os.path.join(data_dir, 'tg_dataset/torch_geometric_dataset.pickle')
-        dataset = pickle.load(open(_dir, 'rb'))
-        train_dataset = dataset['train']
-        test_dataset = dataset['test']
+    test_data_dirs = data_dir + '/mol_files/test_set'
+    smile_csv = pd.read_csv(data_dir + '/train_set.ReorgE.csv', index_col=0)
 
-    else:
-        dataset = {}
+    test_data = glob(test_data_dirs + '/*.mol')
 
-        test_data_dirs = data_dir + '/mol_files/test_set'
-        smile_csv = pd.read_csv(data_dir + '/train_set.ReorgE.csv', index_col=0)
-
-        test_data = glob(test_data_dirs + '/*.mol')
-
-        train_dataset = make_mol_file_to_dataset(smile_csv, train_data, mol_state, test=False)
-        test_dataset = make_mol_file_to_dataset(smile_csv, test_data, mol_state, test=True)
-
-        dataset['train'] = train_dataset
-        dataset['test'] = test_dataset
-
-        mkdir(os.path.join(data_dir, 'tg_dataset'))
-        pickle.dump(dataset, open(os.path.join(data_dir, 'tg_dataset/torch_geometric_dataset.pickle'), 'wb'))
+    train_dataset = make_mol_file_to_dataset(smile_csv, train_data, mol_state, test=False)
+    test_dataset = make_mol_file_to_dataset(smile_csv, test_data, mol_state, test=True)
 
     seed = np.random.randint(10000)
     random_state = np.random.RandomState(seed=seed)
