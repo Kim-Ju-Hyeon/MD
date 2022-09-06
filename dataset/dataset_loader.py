@@ -137,4 +137,7 @@ def get_dataset(data_dir, mol_state):
     for jj in val_idx:
         validation.append(train_dataset[jj])
 
+    print(len(train))
+    print(len(validation))
+
     return train, validation, test_dataset
