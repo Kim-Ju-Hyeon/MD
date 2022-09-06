@@ -83,8 +83,8 @@ class Runner(object):
                 if self.use_gpu and (self.device != 'cpu'):
                     data_batch = data_batch.to(device=self.device)
 
-                out = self.model(z=data_batch.z, pos=data_batch.pos, edge_index=data_batch.edge_index,
-                                 batch=data_batch.batch)
+                    out = self.model(z=data_batch.z, pos=data_batch.pos, edge_index=data_batch.edge_index,
+                                     batch=data_batch.batch)
 
                 loss = self.loss(out.squeeze(), data_batch.y)
                 # backward pass (accumulates gradients).
