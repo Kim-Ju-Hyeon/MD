@@ -39,7 +39,6 @@ class Runner(object):
         if self.use_gpu and (self.device != 'cpu'):
             self.model = self.model.to(device=self.device)
 
-        print(config.model.mol_state)
         self._train, self._validation, self._test = get_dataset('./data', mol_state=config.model.mol_state)
 
     def train(self):
