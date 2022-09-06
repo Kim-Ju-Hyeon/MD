@@ -1,5 +1,5 @@
 ---
-exp_name: DimeNet_g # 0417
+exp_name: DimeNet # 0417
 exp_dir: ../exp
 use_gpu: True
 device: 0
