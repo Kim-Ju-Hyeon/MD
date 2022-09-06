@@ -125,7 +125,7 @@ def get_dataset(data_dir, mol_state):
     random_state = np.random.RandomState(seed=seed)
     perm = torch.from_numpy(random_state.permutation(np.arange(len(train_dataset))))
 
-    idx = int(len(train_data) * 0.8)
+    idx = int(len(train_dataset) * 0.8)
     train_idx = perm[:idx]
     val_idx = perm[idx:]
 
@@ -136,8 +136,5 @@ def get_dataset(data_dir, mol_state):
     validation = []
     for jj in val_idx:
         validation.append(train_dataset[jj])
-
-    print(len(train))
-    print(len(validation))
 
     return train, validation, test_dataset
