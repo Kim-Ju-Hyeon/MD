@@ -39,14 +39,17 @@ def make_mol_file_to_dataset(smile_csv, data, mol_state, test=False):
             elif ('ex' in temp[-1]) and (mol_state == 'ex'):
                 target = smile_csv.iloc[index].Reorg_ex
                 state = 'ex'
+            else:
+                break
         else:
+            target = 0
             if ('g' in temp[-1]) and (mol_state == 'g'):
                 state = 'g'
 
             elif ('ex' in temp[-1]) and (mol_state == 'ex'):
                 state = 'ex'
-
-            target = 0
+            else:
+                break
 
         m = Chem.MolFromMolFile(m_dir)
 
