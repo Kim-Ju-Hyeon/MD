@@ -14,11 +14,12 @@ def xyz_to_dat(pos, edge_index, num_nodes, use_torsion=False):
         use_torsion: If set to :obj:`True`, will return distance, angle and torsion, otherwise only return distance and angle (also retrun some useful index). (default: :obj:`False`)
     """
     j, i = edge_index  # j->i
-
+    device = j.device
+    
     # Calculate distances. # number of edges
     dist = (pos[i] - pos[j]).pow(2).sum(dim=-1).sqrt()
 
-    value = torch.arange(j.size(0), device=j.device)
+    value = torch.arange(j.size(0), device=device)
     adj_t = SparseTensor(row=i, col=j, value=value, sparse_sizes=(num_nodes, num_nodes))
     adj_t_row = adj_t[j]
     num_triplets = adj_t_row.set_value(None).sum(dim=1).to(torch.long)
