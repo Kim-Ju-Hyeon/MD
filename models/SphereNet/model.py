@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 from torch_geometric.nn import radius_graph
 
-from layers import *
-from utils import xyz_to_dat
+from models.SphereNet.layers import *
+from models.SphereNet.utils import xyz_to_dat
 
 class SphereNet(torch.nn.Module):
     r"""
