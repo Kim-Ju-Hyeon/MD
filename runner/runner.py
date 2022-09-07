@@ -13,7 +13,8 @@ from utils.train_helper import model_snapshot, load_model
 from utils.logger import get_logger
 
 from torch_geometric.loader import DataLoader
-from models.model import DimeNet
+from models.DimeNet.model import DimeNet
+from models.SphereNet.model import SphereNet
 from dataset.dataset_loader import get_dataset
 
 
@@ -34,7 +35,10 @@ class Runner(object):
         self.batch_size = config.train.batch_size
         self.loss = nn.L1Loss()
 
-        self.model = DimeNet(self.config.model)
+        if config.model_name == 'DimeNet':
+            self.model = DimeNet(self.config.model)
+        elif config.model_name == 'SphereNet':
+            self.model = SphereNet(self.config.model)
 
         if self.use_gpu and (self.device != 'cpu'):
             self.model = self.model.to(device=self.device)
@@ -82,8 +86,8 @@ class Runner(object):
                 if self.use_gpu and (self.device != 'cpu'):
                     data_batch = data_batch.to(device=self.device)
 
-                    out = self.model(z=data_batch.z, pos=data_batch.pos, edge_index=data_batch.edge_index,
-                                     batch=data_batch.batch)
+                out = self.model(z=data_batch.z, pos=data_batch.pos, edge_index=data_batch.edge_index,
+                                 batch=data_batch.batch)
 
                 loss = self.loss(out.squeeze(), data_batch.y)
                 # backward pass (accumulates gradients).

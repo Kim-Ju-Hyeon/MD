@@ -5,7 +5,7 @@ from torch.nn import Embedding, Linear
 from torch_scatter import scatter
 
 from torch_geometric.nn.inits import glorot_orthogonal
-from models.layers import ResidualLayer
+from models.DimeNet.layers import ResidualLayer
 
 
 class EmbeddingBlock(torch.nn.Module):

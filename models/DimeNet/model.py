@@ -1,7 +1,5 @@
-from typing import Callable, Union
-
-from models.layers import *
-from models.block import *
+from models.DimeNet.layers import *
+from models.DimeNet.block import *
 from torch_sparse import SparseTensor
 from torch_geometric.nn import radius_graph
 
