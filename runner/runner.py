@@ -146,7 +146,11 @@ class Runner(object):
 
         self.test_dataset = DataLoader(self._test, batch_size=1)
 
-        self.best_model = DimeNet(self.config.model)
+        if self.config.model_name == 'DimeNet':
+            self.best_model = DimeNet(self.config.model)
+        elif self.config.model_name == 'SphereNet':
+            self.best_model = SphereNet(self.config.model)
+
         best_snapshot = load_model(self.best_model_dir)
 
         self.best_model.load_state_dict(best_snapshot)
