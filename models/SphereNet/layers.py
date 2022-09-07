@@ -8,7 +8,7 @@ from torch_scatter import scatter
 
 from torch_geometric.nn.inits import glorot_orthogonal
 
-from features import dist_emb, angle_emb, torsion_emb
+from models.SphereNet.features import dist_emb, angle_emb, torsion_emb
 
 
 class ResidualLayer(torch.nn.Module):
