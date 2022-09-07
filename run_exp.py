@@ -38,7 +38,10 @@ def main(conf_file_path):
 
 
             config.model.hidden_channels = hidden_channels
-            config.model.num_blocks = num_blocks
+            if config.model_name == 'DimeNet':
+                config.model.num_blocks = num_blocks
+            elif config.model_name == 'SphereNet':
+                config.model.num_layers = num_blocks
 
             save_name = os.path.join(config.exp_sub_dir, 'config.yaml')
             yaml.dump(edict2dict(config), open(save_name, 'w'), default_flow_style=False)
