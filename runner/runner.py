@@ -15,7 +15,7 @@ from utils.logger import get_logger
 from torch_geometric.loader import DataLoader
 from models.DimeNet.model import DimeNet
 from models.SphereNet.model import SphereNet
-from models.ComeNet.model import ComENet
+from models.ComENet.model import ComENet
 from dataset.dataset_loader import get_dataset
 
 

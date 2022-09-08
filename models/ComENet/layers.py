@@ -2,7 +2,7 @@ from torch_cluster import radius_graph
 from torch_geometric.nn import GraphConv, GraphNorm
 from torch_geometric.nn import inits
 
-from models.ComeNet.features import angle_emb, torsion_emb
+from models.ComENet.features import angle_emb, torsion_emb
 
 from torch_scatter import scatter, scatter_min
 
