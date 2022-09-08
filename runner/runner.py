@@ -15,6 +15,7 @@ from utils.logger import get_logger
 from torch_geometric.loader import DataLoader
 from models.DimeNet.model import DimeNet
 from models.SphereNet.model import SphereNet
+from models.ComeNet.model import ComENet
 from dataset.dataset_loader import get_dataset
 
 
@@ -39,6 +40,8 @@ class Runner(object):
             self.model = DimeNet(self.config.model)
         elif config.model_name == 'SphereNet':
             self.model = SphereNet(self.config.model)
+        elif config.model_name == 'ComENet':
+            self.model = ComENet(self.config.model)
 
         if self.use_gpu and (self.device != 'cpu'):
             self.model = self.model.to(device=self.device)
@@ -151,6 +154,9 @@ class Runner(object):
             self.best_model = DimeNet(self.config.model)
         elif self.config.model_name == 'SphereNet':
             self.best_model = SphereNet(self.config.model)
+        elif self.config.model_name == 'ComENet':
+            self.best_model = ComENet(self.config.model)
+
 
         best_snapshot = load_model(self.best_model_dir)
 
