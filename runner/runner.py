@@ -131,6 +131,7 @@ class Runner(object):
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 torch.save(self.model.state_dict(), self.best_model_dir)
+                results['best_val_loss'] = best_val_loss
 
             self.logger.info("Epoch {} Avg. Validation Loss = {:.6}".format(epoch + 1, val_loss, 0))
             self.logger.info("Current Best Validation Loss = {:.6}".format(best_val_loss))
