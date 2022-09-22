@@ -1,0 +1,35 @@
+---
+exp_name: DimeNet # 0417
+exp_dir: ../exp
+use_gpu: True
+device: 0
+seed: None # If you want to reproduce set the seed
+model_name: DimeNet
+dataset_name: QM9
+train_resume: False
+
+train:
+    optimizer: Adam
+    epoch: 3
+    loss_function : MAE
+    lr: 1.0e-3
+    wd: 0.0e-4 # Adam
+    momentum: 0.9 # SGD
+    T_0: 50 # cosine annealing
+    T_mult: 5 # cosine annealing
+    batch_size : 64
+
+model:
+    mol_state: g
+    hidden_channels: 128
+    num_radial: 6
+    out_channels: 1
+    num_bilinear: 8
+    num_spherical: 7
+    envelope_exponent: 5
+    num_before_skip: 1
+    num_after_skip: 2
+    num_output_layers: 3
+    cutoff: 5.0
+    max_num_neighbors: 32
+    num_blocks: 6

@@ -16,7 +16,7 @@ from torch_geometric.loader import DataLoader
 from models.DimeNet.model import DimeNet
 from models.SphereNet.model import SphereNet
 from models.ComENet.model import ComENet
-from dataset.dataset_loader import get_dataset
+from dataset.dataset_loader import get_dataset, get_qm9_dataset
 
 
 class Runner(object):
@@ -46,7 +46,10 @@ class Runner(object):
         if self.use_gpu and (self.device != 'cpu'):
             self.model = self.model.to(device=self.device)
 
-        self._train, self._validation, self._test = get_dataset('./data', mol_state=config.model.mol_state)
+        if self.config.dataset_name == 'Qm9':
+            self._train, self._validation, self._test = get_qm9_dataset('./data/qm9_hackerthon')
+        else:
+            self._train, self._validation, self._test = get_dataset('./data', mol_state=config.model.mol_state)
 
     def train(self):
         self.train_dataset = DataLoader(self._train, batch_size=self.batch_size)
@@ -145,8 +148,11 @@ class Runner(object):
         pickle.dump(results, open(os.path.join(self.config.exp_sub_dir, 'training_result.pickle'), 'wb'))
 
     def test(self):
-        submission = pd.read_csv("./data/sample_submission.csv", index_col=0)
-        submission = submission.astype('float')
+        if self.config.dataset_name == 'Qm9':
+            submission = []
+        else:
+            submission = pd.read_csv("./data/sample_submission.csv", index_col=0)
+            submission = submission.astype('float')
 
         self.test_dataset = DataLoader(self._test, batch_size=1)
 
@@ -176,9 +182,16 @@ class Runner(object):
                 out = self.model(z=data_batch.z, pos=data_batch.pos, edge_index=data_batch.edge_index,
                                  batch=data_batch.batch)
 
-            if data_batch.state[0] == 'g':
-                submission.iloc[int(data_batch.idx[0])]['Reorg_g'] = out.cpu().detach().numpy()
+            if self.config.dataset_name == 'Qm9':
+                pred = out.cpu().detach().numpy()
+                submission.append(pred)
             else:
-                submission.iloc[int(data_batch.idx[0])]['Reorg_ex'] = out.cpu().detach().numpy()
+                if data_batch.state[0] == 'g':
+                    submission.iloc[int(data_batch.idx[0])]['Reorg_g'] = out.cpu().detach().numpy()
+                else:
+                    submission.iloc[int(data_batch.idx[0])]['Reorg_ex'] = out.cpu().detach().numpy()
+
+        if self.config.dataset_name == 'Qm9':
+            submission = np.array(submission).reshape(-1)
 
         submission.to_csv(self.config.exp_sub_dir + '/submission.csv')

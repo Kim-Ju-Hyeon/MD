@@ -109,6 +109,70 @@ def make_mol_file_to_dataset(smile_csv, data, mol_state, test=False):
     return dataset
 
 
+def make_qm9_hackerthon_to_dataset(data_dir):
+    train_data = torch.load(data_dir+'qm9_train_data.pt')
+
+    y = train_data['mu']
+    num_nodes = train_data['num_atoms']
+    num_edges = train_data['num_bonds']
+    coords = train_data['x']
+    atomic_numbers = train_data['atomic_numbers']
+    edge = train_data['edge']
+
+    train = []
+
+    for i in range(len(y)):
+        y_s = torch.tensor(y[i], dtype=torch.float)
+        num_node_s = num_nodes[i]
+        num_edge_s = num_edges[i]
+        coord = torch.tensor(coords[i][:num_node_s])
+        atomic_num = torch.tensor(atomic_numbers[i][:num_node_s, :], dtype=torch.long)
+        edge_index = torch.tensor(edge[0][:num_node_s, :2], dtype=torch.long).t()
+
+        train.append(Data(pos=coord, z=atomic_num, y=y_s, edge_index=edge_index))
+
+    test_data = torch.load(data_dir+"qm9_test_data.pt")
+
+    num_nodes = test_data['num_atoms']
+    num_edges = test_data['num_bonds']
+    coords = test_data['x']
+    atomic_numbers = test_data['atomic_numbers']
+
+    test = []
+    for i in range(len(num_nodes)):
+        num_node_s = num_nodes[i]
+        num_edge_s = num_edges[i]
+        coord = torch.tensor(coords[i][:num_node_s])
+        edge_index = torch.tensor(edge[0][:num_node_s, :2], dtype=torch.long).t()
+        atomic_num = torch.tensor(atomic_numbers[i][:num_node_s, :], dtype=torch.long)
+
+        test.append(Data(pos=coord, z=atomic_num, edge_index=edge_index))
+
+    return train, test
+
+
+def get_qm9_dataset(data_dir):
+    train_dataset, test_dataset = make_qm9_hackerthon_to_dataset(data_dir)
+
+    seed = np.random.randint(10000)
+    random_state = np.random.RandomState(seed=seed)
+    perm = torch.from_numpy(random_state.permutation(np.arange(len(train_dataset))))
+
+    idx = int(len(train_dataset) * 0.8)
+    train_idx = perm[:idx]
+    val_idx = perm[idx:]
+
+    train = []
+    for ii in train_idx:
+        train.append(train_dataset[ii])
+
+    validation = []
+    for jj in val_idx:
+        validation.append(train_dataset[jj])
+
+    return train, validation, test_dataset
+        
+        
 def get_dataset(data_dir, mol_state):
     train_data_dirs = data_dir + '/mol_files/train_set'
     train_data = glob(train_data_dirs + '/*.mol')
