@@ -110,43 +110,56 @@ def make_mol_file_to_dataset(smile_csv, data, mol_state, test=False):
 
 
 def make_qm9_hackerthon_to_dataset(data_dir):
-    train_data = torch.load(data_dir+'qm9_train_data.pt')
+    path = os.path.join(data_dir, 'geometric_dataset')
+    train_path = os.path.join(path, 'train_dataset.pickle')
+    if os.path.isfile(train_path):
+        train = pickle.load(open(train_path, 'rb'))
+    else:
+        train_data = torch.load(data_dir+'/qm9_train_data.pt')
 
-    y = train_data['mu']
-    num_nodes = train_data['num_atoms']
-    num_edges = train_data['num_bonds']
-    coords = train_data['x']
-    atomic_numbers = train_data['atomic_numbers']
-    edge = train_data['edge']
+        y = train_data['mu']
+        num_nodes = train_data['num_atoms']
+        num_edges = train_data['num_bonds']
+        coords = train_data['x']
+        atomic_numbers = train_data['atomic_numbers']
+        edge = train_data['edge']
 
-    train = []
+        train = []
 
-    for i in range(len(y)):
-        y_s = torch.tensor(y[i], dtype=torch.float)
-        num_node_s = num_nodes[i]
-        num_edge_s = num_edges[i]
-        coord = torch.tensor(coords[i][:num_node_s])
-        atomic_num = torch.tensor(atomic_numbers[i][:num_node_s, :], dtype=torch.long)
-        edge_index = torch.tensor(edge[0][:num_node_s, :2], dtype=torch.long).t()
+        for i in range(len(y)):
+            y_s = torch.tensor(y[i], dtype=torch.float)
+            num_node_s = num_nodes[i]
+            num_edge_s = num_edges[i]
+            coord = torch.tensor(coords[i][:num_node_s])
+            atomic_num = torch.tensor(atomic_numbers[i][:num_node_s, :], dtype=torch.long)
+            edge_index = torch.tensor(edge[0][:num_node_s, :2], dtype=torch.long).t()
 
-        train.append(Data(pos=coord, z=atomic_num, y=y_s, edge_index=edge_index))
+            train.append(Data(pos=coord, z=atomic_num, y=y_s, edge_index=edge_index))
 
-    test_data = torch.load(data_dir+"qm9_test_data.pt")
+        pickle.dump(train, open(train_path, 'wb'))
 
-    num_nodes = test_data['num_atoms']
-    num_edges = test_data['num_bonds']
-    coords = test_data['x']
-    atomic_numbers = test_data['atomic_numbers']
+    test_path = os.path.join(path, 'train_dataset.pickle')
+    if os.path.isfile(test_path):
+        test = pickle.load(open(test_path, 'rb'))
+    else:
+        test_data = torch.load(data_dir+"/qm9_test_data.pt")
 
-    test = []
-    for i in range(len(num_nodes)):
-        num_node_s = num_nodes[i]
-        num_edge_s = num_edges[i]
-        coord = torch.tensor(coords[i][:num_node_s])
-        edge_index = torch.tensor(edge[0][:num_node_s, :2], dtype=torch.long).t()
-        atomic_num = torch.tensor(atomic_numbers[i][:num_node_s, :], dtype=torch.long)
+        num_nodes = test_data['num_atoms']
+        num_edges = test_data['num_bonds']
+        coords = test_data['x']
+        atomic_numbers = test_data['atomic_numbers']
 
-        test.append(Data(pos=coord, z=atomic_num, edge_index=edge_index))
+        test = []
+        for i in range(len(num_nodes)):
+            num_node_s = num_nodes[i]
+            num_edge_s = num_edges[i]
+            coord = torch.tensor(coords[i][:num_node_s])
+            edge_index = torch.tensor(edge[0][:num_node_s, :2], dtype=torch.long).t()
+            atomic_num = torch.tensor(atomic_numbers[i][:num_node_s, :], dtype=torch.long)
+
+            test.append(Data(pos=coord, z=atomic_num, edge_index=edge_index))
+
+        pickle.dump(test, open(test_path, 'wb'))
 
     return train, test
 
