@@ -5,7 +5,7 @@ use_gpu: True
 device: 0
 seed: None # If you want to reproduce set the seed
 model_name: DimeNet
-dataset_name: QM9
+dataset_name: Qm9
 train_resume: False
 
 train:
