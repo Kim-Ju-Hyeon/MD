@@ -192,6 +192,7 @@ class Runner(object):
                     submission.iloc[int(data_batch.idx[0])]['Reorg_ex'] = out.cpu().detach().numpy()
 
         if self.config.dataset_name == 'Qm9':
-            submission = np.array(submission).reshape(-1)
+            submission = np.array(submission)
+            submission = pd.DataFrame(submission.reshape(-1))
 
         submission.to_csv(self.config.exp_sub_dir + '/submission.csv')
