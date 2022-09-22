@@ -139,7 +139,7 @@ def make_qm9_hackerthon_to_dataset(data_dir):
 
         pickle.dump(train, open(train_path, 'wb'))
 
-    test_path = os.path.join(path, 'train_dataset.pickle')
+    test_path = os.path.join(path, 'test_dataset.pickle')
     if os.path.isfile(test_path):
         test = pickle.load(open(test_path, 'rb'))
     else:
