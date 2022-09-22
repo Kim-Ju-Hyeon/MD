@@ -132,7 +132,7 @@ def make_qm9_hackerthon_to_dataset(data_dir):
             num_node_s = num_nodes[i]
             num_edge_s = num_edges[i]
             coord = torch.tensor(coords[i][:num_node_s])
-            atomic_num = torch.tensor(atomic_numbers[i][:num_node_s, :], dtype=torch.long)
+            atomic_num = torch.tensor(atomic_numbers[i][:num_node_s, :], dtype=torch.long).squeeze()
             edge_index = torch.tensor(edge[0][:num_node_s, :2], dtype=torch.long).t()
 
             train.append(Data(pos=coord, z=atomic_num, y=y_s, edge_index=edge_index))
@@ -157,7 +157,7 @@ def make_qm9_hackerthon_to_dataset(data_dir):
             num_edge_s = num_edges[i]
             coord = torch.tensor(coords[i][:num_node_s])
             edge_index = torch.tensor(edge[0][:num_node_s, :2], dtype=torch.long).t()
-            atomic_num = torch.tensor(atomic_numbers[i][:num_node_s, :], dtype=torch.long)
+            atomic_num = torch.tensor(atomic_numbers[i][:num_node_s, :], dtype=torch.long).squeeze()
 
             test.append(Data(pos=coord, z=atomic_num, edge_index=edge_index))
 
