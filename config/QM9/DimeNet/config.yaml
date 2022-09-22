@@ -10,7 +10,7 @@ train_resume: False
 
 train:
     optimizer: Adam
-    epoch: 3
+    epoch: 150
     loss_function : MAE
     lr: 1.0e-3
     wd: 0.0e-4 # Adam

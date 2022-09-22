@@ -154,7 +154,7 @@ class Runner(object):
             submission = pd.read_csv("./data/sample_submission.csv", index_col=0)
             submission = submission.astype('float')
 
-        self.test_dataset = DataLoader(self._test, batch_size=1)
+        self.test_dataset = DataLoader(self._test, batch_size=self.batch_size)
 
         if self.config.model_name == 'DimeNet':
             self.best_model = DimeNet(self.config.model)
