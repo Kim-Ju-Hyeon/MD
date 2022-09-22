@@ -115,6 +115,7 @@ def make_qm9_hackerthon_to_dataset(data_dir):
     if os.path.isfile(train_path):
         train = pickle.load(open(train_path, 'rb'))
     else:
+        mkdir(path)
         train_data = torch.load(data_dir+'/qm9_train_data.pt')
 
         y = train_data['mu']
@@ -142,6 +143,7 @@ def make_qm9_hackerthon_to_dataset(data_dir):
     if os.path.isfile(test_path):
         test = pickle.load(open(test_path, 'rb'))
     else:
+        mkdir(path)
         test_data = torch.load(data_dir+"/qm9_test_data.pt")
 
         num_nodes = test_data['num_atoms']
