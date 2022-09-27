@@ -193,7 +193,7 @@ class Runner(object):
 
         if self.config.dataset_name == 'Qm9':
             submission = np.array(submission)
-            np.savetxt('submission.csv', submission)
+            np.savetxt('./submission.csv', submission)
 
         else:
             submission.to_csv(self.config.exp_sub_dir + '/submission.csv')
