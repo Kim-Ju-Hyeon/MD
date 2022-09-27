@@ -21,7 +21,7 @@ def main(conf_file_path):
         for num_blocks in num_blocks_list:
             config = edict(yaml.load(open(conf_file_path, 'r'), Loader=yaml.FullLoader))
 
-            hyperparameter = f'hidden_channels_{hidden_channels}' \
+            hyperparameter = f'hidden_channels_{hidden_channels}' \git 
                              f'__num_blocks_{num_blocks}'
 
             now = datetime.datetime.now(pytz.timezone('Asia/Seoul'))
@@ -51,14 +51,14 @@ def main(conf_file_path):
             logger = setup_logging('INFO', log_file, logger_name=str(config.seed))
             logger.info("Writing log file to {}".format(log_file))
             logger.info("Exp instance id = {}".format(config.exp_name))
-            #
-            # try:
-            #     my_runner = Runner(config=config)
-            #     my_runner.train()
-            #     my_runner.test()
-            #
-            # except:
-            #     logger.error(traceback.format_exc())
+
+            try:
+                my_runner = Runner(config=config)
+                my_runner.train()
+                my_runner.test()
+
+            except:
+                logger.error(traceback.format_exc())
 
 
 if __name__ == '__main__':
