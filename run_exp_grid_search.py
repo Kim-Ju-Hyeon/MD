@@ -36,7 +36,6 @@ def main(conf_file_path):
 
             mkdir(config.model_save)
 
-
             config.model.hidden_channels = hidden_channels
             if config.model_name == 'DimeNet':
                 config.model.num_blocks = num_blocks
@@ -52,14 +51,14 @@ def main(conf_file_path):
             logger = setup_logging('INFO', log_file, logger_name=str(config.seed))
             logger.info("Writing log file to {}".format(log_file))
             logger.info("Exp instance id = {}".format(config.exp_name))
-
-            try:
-                my_runner = Runner(config=config)
-                my_runner.train()
-                my_runner.test()
-
-            except:
-                logger.error(traceback.format_exc())
+            #
+            # try:
+            #     my_runner = Runner(config=config)
+            #     my_runner.train()
+            #     my_runner.test()
+            #
+            # except:
+            #     logger.error(traceback.format_exc())
 
 
 if __name__ == '__main__':
