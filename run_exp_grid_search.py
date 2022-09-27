@@ -14,8 +14,8 @@ import yaml
 @click.command()
 @click.option('--conf_file_path', type=click.STRING, default=None)
 def main(conf_file_path):
-    hidden_channels_list = [16, 32, 64, 128]
-    num_blocks_list = [1, 2, 4, 6]
+    hidden_channels_list = [64, 128, 256, 512]
+    num_blocks_list = [4, 6, 8, 10]
 
     for hidden_channels in hidden_channels_list:
         for num_blocks in num_blocks_list:

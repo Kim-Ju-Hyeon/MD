@@ -173,7 +173,7 @@ def get_qm9_dataset(data_dir):
     random_state = np.random.RandomState(seed=seed)
     perm = torch.from_numpy(random_state.permutation(np.arange(len(train_dataset))))
 
-    idx = int(len(train_dataset) * 0.8)
+    idx = int(len(train_dataset) * 0.99)
     train_idx = perm[:idx]
     val_idx = perm[idx:]
 
