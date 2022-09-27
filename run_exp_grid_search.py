@@ -21,7 +21,7 @@ def main(conf_file_path):
         for num_blocks in num_blocks_list:
             config = edict(yaml.load(open(conf_file_path, 'r'), Loader=yaml.FullLoader))
 
-            hyperparameter = f'hidden_channels_{hidden_channels}' \git 
+            hyperparameter = f'hidden_channels_{hidden_channels}'\
                              f'__num_blocks_{num_blocks}'
 
             now = datetime.datetime.now(pytz.timezone('Asia/Seoul'))
