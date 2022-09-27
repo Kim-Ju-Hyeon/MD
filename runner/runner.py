@@ -179,12 +179,12 @@ class Runner(object):
                 data_batch = data_batch.to(device=self.device)
 
             with torch.no_grad():
-                out = self.model(z=data_batch.z, pos=data_batch.pos, edge_index=data_batch.edge_index,
+                out = self.best_model(z=data_batch.z, pos=data_batch.pos, edge_index=data_batch.edge_index,
                                  batch=data_batch.batch)
 
             if self.config.dataset_name == 'Qm9':
-                pred = out.cpu().detach().numpy()
-                submission.append(pred)
+                pred = out.cpu().detach().numpy().reshape(-1).tolist()
+                submission += pred
             else:
                 if data_batch.state[0] == 'g':
                     submission.iloc[int(data_batch.idx[0])]['Reorg_g'] = out.cpu().detach().numpy()
@@ -193,6 +193,7 @@ class Runner(object):
 
         if self.config.dataset_name == 'Qm9':
             submission = np.array(submission)
-            submission = pd.DataFrame(submission.reshape(-1))
+            np.savetxt('submission.csv', submission)
 
-        submission.to_csv(self.config.exp_sub_dir + '/submission.csv')
+        else:
+            submission.to_csv(self.config.exp_sub_dir + '/submission.csv')
